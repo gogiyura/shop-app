@@ -1,20 +1,50 @@
 package com.example.model.entity;
 
+import java.sql.Date;
+
 public class User extends Entity {
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String phoneNumber;
     private Role role;
     private boolean blocked;
+    private Date birthDate;
+    private Date createTime;
 
-    public String getName() {
-        return name;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.blocked = false;
+        this.role = Role.USER;
+    }
+
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getEmail() {

@@ -13,4 +13,8 @@ public class ProductList {
     public static List<Product> getInstance() {
         return productList;
     }
+
+    static {
+        //productList.add(new Product());
+    }
 }

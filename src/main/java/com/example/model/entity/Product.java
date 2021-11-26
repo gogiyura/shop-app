@@ -13,6 +13,11 @@ public class Product extends Entity{
     private String country;
     private Date createTime;
 
+    public long getProductCategoryId() {
+        Category cat = this.getCategory();
+        return cat.getId();
+    }
+
     public Product(String name, String brand, String description, String price, String category, String country) {
 
         this.name = name;
@@ -28,6 +33,8 @@ public class Product extends Entity{
         Product product = new Product(name, brand, description, price, category, country);
         product.setId(id);
     }
+
+    public Product(){}
 
     public String getName() {
         return name;
@@ -55,6 +62,10 @@ public class Product extends Entity{
 
     public Date getCreateTime() {
         return createTime;
+    }
+
+    public void setCreateTime(Date date) {
+        this.createTime = date;
     }
 
     public int getPrice() {

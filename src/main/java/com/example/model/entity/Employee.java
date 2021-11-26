@@ -16,6 +16,7 @@ public class Employee {
     private String role;
     private String department;
     private String email;
+
     private static final AtomicLong counter = new AtomicLong(100);
 
     public Employee(String name, String lastName, String birthDate, String role, String department, String email, long id) {

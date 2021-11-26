@@ -11,4 +11,5 @@ public class Category extends Entity {
     public void setName(String name) {
         this.name = name;
     }
+
 }

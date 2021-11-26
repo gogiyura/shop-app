@@ -14,7 +14,7 @@
 <body>
 <jsp:include page="../jspf/navbar.jsp" />
 <div class="container">
-    <form action="/product" method="post"  role="form" data-toggle="validator" >
+    <form action="/catalog" method="post"  role="form" data-toggle="validator" >
         <c:if test ="${empty action}">
             <c:set var="action" value="add"/>
         </c:if>

@@ -26,7 +26,7 @@ public class ConnectionPool {
         Connection c = null;
         try {
             ctx = new InitialContext();
-            DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/employees-app");
+            DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/shop-app");
             c = ds.getConnection();
         } catch (NamingException e) {
             e.printStackTrace();

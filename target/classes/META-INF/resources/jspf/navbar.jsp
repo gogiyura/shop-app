@@ -6,8 +6,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 <script src="../js/bootstrap.min.js"></script>
+
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -38,16 +40,15 @@
             <ul class="nav navbar-nav navbar-right">
 
                 <li class="nav-item dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                        Menu </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/employee">Employees</a></li>
-                        <li><a class="dropdown-item" href="/catalog">Catalog</a></li>
-                        <li><a class="dropdown-item" href="/users">Users</a></li>
+                    <a id="dLabel" href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
+                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                        <li><a href="/employee">Employees</a></li>
+                        <li><a href="/catalog">Catalog</a></li>
+                        <li><a href="/users">Users</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a class="dropdown-item" href="/Cabinet">Cabinet</a></li>
+                        <li><a href="/Cabinet">Cabinet</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a class="dropdown-item" href="/logout">Log out</a></li>
+                        <li><a href="/logout">Log out</a></li>
                     </ul>
                 </li>
                 <li><a href="/login">Log in</a></li>

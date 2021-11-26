@@ -43,7 +43,7 @@ public class ProductServlet extends HttpServlet {
         long idProduct = Integer.valueOf(req.getParameter("idProduct"));
         Product product = null;
         try {
-            product = productDAO.getProduct(idProduct);
+            product = ProductDAO.findProductById(idProduct);
         } catch (Exception ex) {
             Logger.getLogger(ProductServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -104,7 +104,8 @@ public class ProductServlet extends HttpServlet {
         req.setAttribute("idProduct", idProduct);
         String message = "The new product has been successfully created.";
         req.setAttribute("message", message);
-        forwardListProducts(req, resp, productList);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/catalog");
+        dispatcher.forward(req, resp);
     }
 
     private void editProductAction(HttpServletRequest req, HttpServletResponse resp)
@@ -140,5 +141,4 @@ public class ProductServlet extends HttpServlet {
         List<Product> productList = productDAO.getAllProducts();
         forwardListProducts(req, resp, productList);
     }
-
 }
