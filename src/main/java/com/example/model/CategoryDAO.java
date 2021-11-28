@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CategoryDAO {
+
     private static final String SQL_GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE id=?";
     private static final String TABLE_CATEGORY = "category";
     private static final String FIELD_ID = "id";

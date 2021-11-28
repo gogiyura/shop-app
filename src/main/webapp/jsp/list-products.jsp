@@ -8,25 +8,28 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <script src="../js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Catalog</title>
 </head>
+
 <body>
 <jsp:include page="../jspf/navbar.jsp" />
 
-
-<div class="container">
+<div class="container mt-5">
     <h2>Products</h2>
     <!--Search Form -->
     <form action="/catalog" method="get" id="seachProductForm" role="form">
         <input type="hidden" id="searchAction" name="searchAction" value="searchByName">
+
         <div class="form-group col-xs-5">
             <input type="text" name="productName" id="productName" class="form-control" required="true" placeholder="Type the Name or Brand of the product"/>
+            <button class="btn btn-outline-primary" type="button">Search
+            </button>
         </div>
-        <button type="submit" class="btn btn-info">
-            <span class="glyphicon glyphicon-search"></span> Search
-        </button>
+
         <br></br>
         <br></br>
     </form>
@@ -71,9 +74,9 @@
                         <td>${product.category}</td>
                         <td>${product.country}</td>
                         <td><a href="#" id="remove"
-                               onclick="document.getElementById('action').value = 'remove';document.getElementById('idProduct').value = '${product.id}';
-
-                                       document.getElementById('productForm').submit();">
+                               onclick="document.getElementById('action').value = 'remove';
+                               document.getElementById('idProduct').value = '${product.id}';
+                               document.getElementById('productForm').submit();">
                             <span class="glyphicon glyphicon-trash"/>
                         </a>
 
@@ -95,6 +98,6 @@
         <button type="submit" class="btn btn-primary  btn-md">New product</button>
     </form>
 </div>
-
+<jsp:include page="../jspf/footer.jsp" />
 </body>
 </html>

@@ -19,11 +19,11 @@ public class EmployeeService {
     }
 
     public List<Employee> searchEmployeesByName(String name) {
-        Comparator<Employee> groupByComparator = Comparator.comparing(Employee::getName)
+        Comparator<Employee> groupByComparator = Comparator.comparing(Employee::getFirstName)
                                                     .thenComparing(Employee::getLastName);
         List<Employee> result = employeeList
                 .stream()
-                .filter(e -> e.getName().equalsIgnoreCase(name) || e.getLastName().equalsIgnoreCase(name))
+                .filter(e -> e.getFirstName().equalsIgnoreCase(name) || e.getLastName().equalsIgnoreCase(name))
                 .sorted(groupByComparator)
                 .collect(Collectors.toList());
         return result;

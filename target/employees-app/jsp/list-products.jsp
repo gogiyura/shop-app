@@ -90,7 +90,10 @@
         </c:otherwise>
     </c:choose>
 </form>
-
+    <form action ="jsp/new-product.jsp">
+        <br></br>
+        <button type="submit" class="btn btn-primary  btn-md">New product</button>
+    </form>
 </div>
 
 </body>

@@ -15,6 +15,7 @@
 <body>
 <jsp:include page="../jspf/navbar.jsp" />
 <h2>404. Страница временно недоступна</h2>
-
+<a href="/catalog"><img src="https://tir-izmailovo.ru/wp-content/uploads/2016/10/404_error.jpg"></a>
+<jsp:include page="../jspf/footer.jsp" />
 </body>
 </html>

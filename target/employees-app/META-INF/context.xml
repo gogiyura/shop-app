@@ -1,5 +1,5 @@
 <Context reloadable="true" backgroundProcessorDelay="1">
-    <resource name="jdbc/employees-app"
+    <resource name="jdbc/shop-app"
               auth="Container"
               description="DB Connection"
               username="root"
@@ -9,6 +9,6 @@
               maxIdle="30"
               maxWait="10000"
               driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/gshop?useUnicode=yes&characterEncoding=UTF-8"/>
+              url="jdbc:mysql://localhost:3306/gshop?useUnicode=yes&amp;characterEncoding=UTF-8"/>
 
 </Context>

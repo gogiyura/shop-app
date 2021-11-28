@@ -13,7 +13,7 @@ public class ConnectionPool {
         //private constructor
     }
 
-    private static ConnectionPool instance = null;
+    private static ConnectionPool instance;
 
     public static ConnectionPool getInstance(){
         if (instance==null)

@@ -1,18 +1,18 @@
 package com.example.model;
 
-import com.example.Constants;
+import com.example.model.Utils.*;
 import com.example.model.entity.Category;
-import com.example.model.entity.Employee;
 import com.example.model.entity.Product;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 
 public class ProductDAO {
+    private static final Logger log = Logger.getLogger(ProductDAO.class);
 
     private static final String TABLE_CATEGORY = "category";
     private static final String FIELD_ID = "id";
@@ -26,49 +26,77 @@ public class ProductDAO {
 
     private static final Map<String, String> COLUMN_TO_SORT_MAP = new HashMap();
     private static final Map<String, String> SORT_DIRECTION_MAP = new HashMap();
+    private static final String SQL_GET_ALL_CATEGORIES = "SELECT * FROM category limit 5";
+    private static final String SQL_GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE id=? LIMIT 5";
+    private static final String SQL_GET_ALL_PRODUCTS = "SELECT * FROM product limit 5";
+    private static final String SQL_GET_POPULAR_PRODUCTS = "SELECT * FROM product where name=? limit 5";
+    private static final String SQL_GET_PRODUCTS_BY_CATEGORY = "SELECT * FROM product p where p.category_id=? LIMIT 5";
+    private static final String SQL_FIND_PRODUCT_BY_ID = "SELECT * FROM product LEFT JOIN category ON category_id=category.id WHERE product.id=? LIMIT 5";
+    private static final String SQL_SEARCH_PRODUCT_BY_NAME = "SELECT * FROM product WHERE product.name=? LIMIT 5";
 
-    private static final String SQL_FIND_PRODUCT_BY_ID = "SELECT * FROM product LEFT JOIN category ON category_id=category.id WHERE product.id=?";
-    private static final String SQL_GET_CATEGORY_BY_ID = "SELECT * FROM category WHERE id=?";
-    public static final String SQL_GET_BRANDS_BY_CATEGORY = "SELECT brand FROM product WHERE category_id = ? GROUP BY brand";
     public static final String SQL_INSERT_PRODUCT = "INSERT INTO product(name,brand,description,price,image_url,category_id,country)VALUES(?,?,?,?,?,?,?)";
     public static final String SQL_UPDATE_PRODUCT = "UPDATE product SET name=?,brand=?,description=?,price=?,image_url=?,category_id=?,country=? WHERE id=?";
-    public static final String SQL_GET_POPULAR_PRODUCTS = "SELECT *, COUNT(*) as count FROM order_content JOIN product ON product_id=product.id GROUP BY product_id ORDER BY count DESC LIMIT ?";
-    public static final String SQL_GET_ALL_CATEGORIES = "SELECT * FROM category";
+    public static final String SQL_GET_BRANDS_BY_CATEGORY = "SELECT brand FROM product WHERE category_id = ? GROUP BY brand LIMIT 5";
+    private static final String DELETE_PRODUCT_BY_ID = "DELETE FROM product WHERE id=?";
 
+    private static ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    List<Product> productList = ProductList.getInstance();
-
-    public List<Product> getAllProducts() {
-        return productList;
-    }
-    public List<Product> searchProductByName(String name) {
-        Comparator<Product> groupByComparator = Comparator.comparing(Product::getName)
-                .thenComparing(Product::getBrand);
-        List<Product> result = productList
-                .stream()
-                .filter(e -> e.getName().equalsIgnoreCase(name) || e.getBrand().equalsIgnoreCase(name))
-                .sorted(groupByComparator)
-                .collect(Collectors.toList());
-        return result;
-    }
-    public static List<Product> getPopularProducts(long limit) {
-        List<Product> products = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(SQL_GET_POPULAR_PRODUCTS)) {
-            pst.setLong(1, limit);
-            try(ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    products.add(mapProduct(rs));
-                }
+    public static List<Product> getAllProducts() {
+        List<Product> productList = new ArrayList<>();
+        try (Connection con = connectionPool.getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_GET_ALL_PRODUCTS);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                productList.add(mapProduct(rs));
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log.trace("В базе не нашлось продуктов");
+        } catch (NullPointerException e) {
+            log.trace( "NPE");
         }
+        return productList;
+    }
+
+
+    public static List<Product> searchProductByName(String name) throws SQLException{
+        List<Product> productList = new ArrayList();
+        try (Connection con = connectionPool.getConnection())
+        {
+            PreparedStatement pst = null;
+                pst = con.prepareStatement(SQL_SEARCH_PRODUCT_BY_NAME);
+                pst.setString(1,name);
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    productList.add(mapProduct(rs));
+                }
+                Utils.closeRSet(rs);
+        Utils.closePst(pst);
+        }
+        return productList;
+    }
+
+    public static List<Product> getPopularProducts(long limit) throws SQLException{
+        List<Product> products = new ArrayList<>();
+        try (Connection con = connectionPool.getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_GET_POPULAR_PRODUCTS)) {
+            pst.setLong(1, limit);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                    products.add(mapProduct(rs));
+                }
+            Utils.closeRSet(rs);
+            Utils.closePst(pst);
+            }
         return products;
     }
-    public static List<Product> getAllProductsByCategory(Category category, String sort, int priceFrom, int priceTo, List<String> brandList, int offset, int limit) {
+
+    public static List<Product> getAllProductsByCategory (
+            Category category, String sort, int priceFrom,
+            int priceTo, List<String> brandList, int offset, int limit)
+            throws SQLException {
         List<Product> list = new ArrayList<>(limit);
         String priceCause= "";
+
 /*        if(priceFrom != null) {
             priceCause += " price >= " + priceFrom + " AND ";
             if(null != priceTo)
@@ -77,21 +105,24 @@ public class ProductDAO {
             if(null != priceTo)
                 priceCause += " price <= " + priceTo + " AND ";
         }*/
+
         StringBuilder brandCause = new StringBuilder();
         if(!brandList.isEmpty()) {
             brandCause.append(" brand IN('").append(brandList.get(0)).append("'");
         }
+
         for (int i = 1; i < brandList.size(); i++) {
             brandCause.append(",'").append(brandList.get(i)).append("'");
         }
+
         if(!brandList.isEmpty()) {
             brandCause.append(") AND ");
         }
-        try (Connection con = ConnectionPool.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(
-                     "SELECT * FROM product WHERE " + priceCause +
-                             brandCause + " category_id=? ORDER BY " +
-                     COLUMN_TO_SORT_MAP.get(sort) + " " + SORT_DIRECTION_MAP.get(sort) + " LIMIT ?, ?")) {
+
+
+        try (Connection con = connectionPool.getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_GET_PRODUCTS_BY_CATEGORY);
+             ) {
             pst.setLong(1, category.getId());
             pst.setInt(2, offset);
             pst.setInt(3, limit);
@@ -107,21 +138,23 @@ public class ProductDAO {
         }
         return list;
     }
-    public static Product findProductById(long id) {
+
+    public static Product findProductById(long id) throws SQLException{
         Product product = null;
-        try (Connection con = ConnectionPool.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(SQL_FIND_PRODUCT_BY_ID)) {
+        try (Connection con = connectionPool.getConnection()) {
+            PreparedStatement pst = con.prepareStatement(SQL_FIND_PRODUCT_BY_ID);
             pst.setLong(1, id);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    product = mapProductAndCategory(rs);
-                }
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                product = mapProductAndCategory(rs);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            Utils.closeRSet(rs);
+            Utils.closePst(pst);
         }
         return product;
     }
+
+
     private static Product mapProductAndCategory(ResultSet rs) throws SQLException {
         Product product = mapProduct(rs);
         Category category = mapCategory(rs);
@@ -129,10 +162,11 @@ public class ProductDAO {
         return product;
     }
 
-    public long addProduct(Product product) {
+
+    public static long addProduct(Product product) {
         long id = 0;
 
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
+        try (Connection con = connectionPool.getConnection()) {
             try {
                 PreparedStatement ps = con.prepareStatement(SQL_INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
                 //name,brand,description,price,image_url,category_id,country
@@ -150,6 +184,7 @@ public class ProductDAO {
                         }
                     }
                 }
+                Utils.closePst(ps);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -158,7 +193,6 @@ public class ProductDAO {
         }
         return id;
     }
-
 
 /*    public boolean updateProduct(Product customer) {
         int matchIdx = 0;
@@ -176,7 +210,7 @@ public class ProductDAO {
 
     public static boolean updateProduct(Product product) {
         boolean res = false;
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
+        try (Connection con = connectionPool.getConnection()) {
             try {
                 PreparedStatement ps = con.prepareStatement(SQL_UPDATE_PRODUCT, Statement.RETURN_GENERATED_KEYS);
                 //name,brand,description,price,image_url,category_id,country
@@ -189,6 +223,8 @@ public class ProductDAO {
                 ps.setLong(7, product.getId());
                 int affectedRows = ps.executeUpdate();
                 res = affectedRows > 0;
+
+                Utils.closePst(ps);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -200,9 +236,13 @@ public class ProductDAO {
 
     public static long addOrUpdateProduct(Product product) {
         long productId = 0;
+
         // Since insert and update SQL queries are similar, we preparing statement in one line
-        try (Connection con = ConnectionPool.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(product.getId() > 0 ? SQL_UPDATE_PRODUCT : SQL_INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = connectionPool.getConnection();
+             PreparedStatement pst = con.prepareStatement(
+                     product.getId() > 0 ? SQL_UPDATE_PRODUCT : SQL_INSERT_PRODUCT,
+                     Statement.RETURN_GENERATED_KEYS)) {
+
             pst.setString(1, product.getName());
             pst.setString(2, product.getBrand());
             pst.setString(3, product.getDescription());
@@ -211,6 +251,7 @@ public class ProductDAO {
             pst.setString(6, product.getImageUrl());
             pst.setLong(7, product.getCategory().getId());
             pst.setString(8, product.getCountry());
+
             if (product.getId() > 0) {
                 pst.setLong(9, product.getId());
                 productId = product.getId();
@@ -221,6 +262,7 @@ public class ProductDAO {
                     if (generatedKeys.next()) {
                         productId = generatedKeys.getLong(1);
                     }
+                    Utils.closeRSet(generatedKeys);
                 }
             }
         } catch (SQLException ex) {
@@ -229,13 +271,22 @@ public class ProductDAO {
         return productId;
     }
 
-    public boolean deleteProduct(long id) {
+    public static boolean deleteProduct(long id) throws SQLException {
+        boolean res = false;
         Predicate<Product> product = e -> e.getId() == id;
-        if (productList.removeIf(product)) {
-            return true;
-        } else {
-            return false;
+        Connection con = connectionPool.getConnection();
+        PreparedStatement ps = con.prepareStatement(DELETE_PRODUCT_BY_ID);
+        try {
+            ps.setString(1, String.valueOf(id));
+            ResultSet rs = ps.executeQuery();
+            res = rs.getBoolean(1);
+            Utils.closeRSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        Utils.closePst(ps);
+        Utils.closeCon(con);
+        return res;
     }
 
     private static Product mapProduct(ResultSet rs) throws SQLException {
@@ -253,7 +304,7 @@ public class ProductDAO {
 
     public static List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection();
+        try (Connection con = connectionPool.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_ALL_CATEGORIES);
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -267,7 +318,7 @@ public class ProductDAO {
 
     public static Category findCategoryById(long id) {
         Category category = null;
-        try (Connection con = ConnectionPool.getInstance().getConnection();
+        try (Connection con = connectionPool.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_CATEGORY_BY_ID)) {
             pst.setLong(1, id);
             try (ResultSet rs = pst.executeQuery()) {
@@ -278,18 +329,21 @@ public class ProductDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return category;
-    }
+        if(category!=null){
+            return category;
+        } else { throw new NullPointerException();
+    }}
 
     public static List<String> getBrandsByCategory(long categoryId) {
         List<String> brands = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection();
+        try (Connection con = connectionPool.getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_BRANDS_BY_CATEGORY)) {
             pst.setLong(1, categoryId);
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     brands.add(rs.getString(1));
                 }
+                Utils.closeRSet(rs);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -303,4 +357,5 @@ public class ProductDAO {
         category.setName(rs.getString(TABLE_CATEGORY + "." + FIELD_NAME));
         return category;
     }
+
 }

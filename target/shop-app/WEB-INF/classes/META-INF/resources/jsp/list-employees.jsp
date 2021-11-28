@@ -1,28 +1,32 @@
+
+
+
+
+
+
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
-        <script src="../js/bootstrap.min.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
         <title>Employees</title>
     </head>
 
     <body>
     <jsp:include page="../jspf/navbar.jsp" />
 
-
-        <div class="container">
+        <div class="container mt-5">
             <h2>Employees</h2>
             <!--Search Form -->
             <form action="/employee" method="get" id="seachEmployeeForm" role="form">
                 <input type="hidden" id="searchAction" name="searchAction" value="searchByName">
-                <div class="form-group col-xs-5">
-                    <input type="text" name="employeeName" id="employeeName" class="form-control" required="true" placeholder="Type the Name or Last Name of the employee"/>                    
+                <div class="input-group mb-3 mt-3">
+                    <input type="text" name="employeeName" id="employeeName" class="form-control" placeholder="Type the Name or Last Name of the employee..">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
                 </div>
-                <button type="submit" class="btn btn-info">
-                    <span class="glyphicon glyphicon-search"></span> Search
-                </button>
-                <br></br>
-                <br></br>
             </form>
 
             <!--Employees List-->
@@ -58,17 +62,17 @@
                                     <td>
                                         <a href="/employee?idEmployee=${employee.id}&searchAction=searchById">${employee.id}</a>
                                     </td>                                    
-                                    <td>${employee.name}</td>
+                                    <td>${employee.firstName}</td>
                                     <td>${employee.lastName}</td>
                                     <td>${employee.birthDate}</td>
                                     <td>${employee.role}</td>
                                     <td>${employee.department}</td>
                                     <td>${employee.email}</td>   
                                     <td><a href="#" id="remove" 
-                                           onclick="document.getElementById('action').value = 'remove';document.getElementById('idEmployee').value = '${employee.id}';
-                                                    
-                                                    document.getElementById('employeeForm').submit();"> 
-                                            <span class="glyphicon glyphicon-trash"/>
+                                           onclick="document.getElementById('action').value = 'remove';
+                                           document.getElementById('idEmployee').value = '${employee.id}';
+                                           document.getElementById('employeeForm').submit();">
+                                        <span class="glyphicon glyphicon-trash"/>
                                         </a>
                                                    
                                     </td>
@@ -89,5 +93,6 @@
                 <button type="submit" class="btn btn-primary  btn-md">New employee</button> 
             </form>
         </div>
+    <jsp:include page="../jspf/footer.jsp" />
     </body>
 </html>

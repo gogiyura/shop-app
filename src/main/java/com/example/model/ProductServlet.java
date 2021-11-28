@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.example.model.entity.Product;
+import org.apache.juli.logging.Log;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,16 +10,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 @WebServlet(
         name = "ProductServlet",
         urlPatterns = {"/catalog"})
 public class ProductServlet extends HttpServlet {
-
-    ProductDAO productDAO = new ProductDAO();
+    private static final Logger log = Logger.getLogger(ProductServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,11 +30,15 @@ public class ProductServlet extends HttpServlet {
                     searchProductById(req, resp);
                     break;
                 case "searchByName":
-                    searchProductByName(req, resp);
+                    try {
+                        searchProductByName(req, resp);
+                    } catch (SQLException e) {
+                        log.trace("", e);
+                    }
                     break;
             }
         }else{
-            List<Product> result = productDAO.getAllProducts();
+            List<Product> result = ProductDAO.getAllProducts();
             forwardListProducts(req, resp, result);
         }
     }
@@ -45,7 +50,7 @@ public class ProductServlet extends HttpServlet {
         try {
             product = ProductDAO.findProductById(idProduct);
         } catch (Exception ex) {
-            Logger.getLogger(ProductServlet.class.getName()).log(Level.SEVERE, null, ex);
+            log.trace("Не удалось найти запись №" + idProduct);
         }
         req.setAttribute("product", product);
         req.setAttribute("action", "edit");
@@ -55,10 +60,14 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void searchProductByName(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         String productName = req.getParameter("productName");
-        List<Product> result = productDAO.searchProductByName(productName);
-        forwardListProducts(req, resp, result);
+        try {List<Product> result = ProductDAO.searchProductByName(productName);}
+        catch (SQLException eSQL) {
+            PrintWriter p = resp.getWriter();
+            p.println("No products found matching your search criteria");
+        }
+        getServletContext().getRequestDispatcher("/catalog");
     }
 
     private void forwardListProducts(HttpServletRequest req, HttpServletResponse resp, List productList)
@@ -99,8 +108,8 @@ public class ProductServlet extends HttpServlet {
         String category = req.getParameter("category");
         String country = req.getParameter("country");
         Product product = new Product(name, brand, description, price, category, country);
-        long idProduct = productDAO.addProduct(product);
-        List<Product> productList = productDAO.getAllProducts();
+        long idProduct = ProductDAO.addProduct(product);
+        List<Product> productList = ProductDAO.getAllProducts();
         req.setAttribute("idProduct", idProduct);
         String message = "The new product has been successfully created.";
         req.setAttribute("message", message);
@@ -119,26 +128,36 @@ public class ProductServlet extends HttpServlet {
         long idProduct = Integer.valueOf(req.getParameter("idProduct"));
         Product product = new Product(name, brand, description, price, category, country, idProduct);
         product.setId(idProduct);
-        boolean success = productDAO.updateProduct(product);
+        boolean success = ProductDAO.updateProduct(product);
         String message = null;
         if (success) {
             message = "The Product has been successfully updated.";
         }
-        List<Product> productList = productDAO.getAllProducts();
+        List<Product> productList = ProductDAO.getAllProducts();
         req.setAttribute("idProduct", idProduct);
         req.setAttribute("message", message);
         forwardListProducts(req, resp, productList);
     }
 
-    private void removeProductByName(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    private void removeProductByName(HttpServletRequest req, HttpServletResponse resp){
         long idProduct = Integer.valueOf(req.getParameter("idProduct"));
-        boolean confirm = productDAO.deleteProduct(idProduct);
+        boolean confirm = false;
+        try {
+            confirm = ProductDAO.deleteProduct(idProduct);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if (confirm){
             String message = "The product has been successfully removed.";
             req.setAttribute("message", message);
         }
-        List<Product> productList = productDAO.getAllProducts();
-        forwardListProducts(req, resp, productList);
+        List<Product> productList = ProductDAO.getAllProducts();
+        try {
+            forwardListProducts(req, resp, productList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ServletException e) {
+            log.trace("Ошибка сервлета, ", e);
+        }
     }
 }
