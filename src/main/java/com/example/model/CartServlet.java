@@ -26,12 +26,6 @@ public class CartServlet extends HttpServlet {
         int quantity = Integer.parseInt(req.getParameter("quantity"));
 
 
-        if (cart == null) {
-            cart = new Cart();
-        } else {
-
-        }
-
     }
 
     private void forwardCart(HttpServletRequest req, HttpServletResponse resp, List employeeList)

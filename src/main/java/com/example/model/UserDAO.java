@@ -63,6 +63,8 @@ public class UserDAO {
         }catch(Exception e){System.out.println(e);}
         return list;
     }
+
+
     public static User getRecordById(int id){
         User u=null;
         try{

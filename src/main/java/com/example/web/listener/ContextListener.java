@@ -12,7 +12,7 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         // lazy initializing DBHelper
-        //ConnectionPool.getInstance();
+        ConnectionPool.getInstance();
     }
 
     @Override

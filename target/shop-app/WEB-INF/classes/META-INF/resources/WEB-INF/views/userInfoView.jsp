@@ -5,6 +5,8 @@
   Time: 8:24
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,14 +15,16 @@
 </head>
 <body>
 
+<jsp:include page="_header.jsp"></jsp:include>
 <jsp:include page="_menu.jsp"></jsp:include>
 
-<h3>Hello: ${loginedUser.userName}</h3>
+<h3>Hello: ${user.userName}</h3>
 
-User Name: <b>${loginedUser.userName}</b>
+User Name: <b>${user.userName}</b>
 <br />
-Gender: ${loginedUser.gender } <br />
+Gender: ${user.gender } <br />
 
+<jsp:include page="_footer.jsp"></jsp:include>
 
 </body>
 </html>
