@@ -25,7 +25,6 @@ public class CookieFilter implements Filter {
 
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
-
     }
 
     @Override

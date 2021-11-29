@@ -15,7 +15,7 @@ public class SecurityDAO {
 
     private static void initUsers() {
 
-/*        // This user has a role as EMPLOYEE.
+        // This user has a role as EMPLOYEE.
         UserAccount emp = new UserAccount("employee1", "123",
                 SecurityConfig.ROLE_USER);
 
@@ -25,14 +25,15 @@ public class SecurityDAO {
 
         mapUsers.put(emp.getLogin(), emp);
         mapUsers.put(mng.getLogin(), mng);
-    }*/
+    }
 
     // Find a User by userName and password.
-/*    public static UserAccount findUser(String userName, String password) {
+
+    public static UserAccount findUser(String userName, String password) {
         UserAccount u = mapUsers.get(userName);
         if (u != null && u.getPassword().equals(password)) {
             return u;
         }
         return null;
- */   }
+    }
 }

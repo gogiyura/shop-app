@@ -16,18 +16,17 @@ public class SecurityConfig {
 
     private static void init() {
 
-        // Конфигурация для роли "EMPLOYEE".
+        // Конфигурация для роли "USER".
         List<String> urlPatterns1 = new ArrayList<String>();
 
         urlPatterns1.add("/employee");
-        urlPatterns1.add("/catalog");
         urlPatterns1.add("/cabinet");
         urlPatterns1.add("/userInfo");
         urlPatterns1.add("/employeeTask");
 
         mapConfig.put(ROLE_USER, urlPatterns1);
 
-        // Конфигурация для роли "MANAGER".
+        // Конфигурация для роли "ADMIN".
         List<String> urlPatterns2 = new ArrayList<String>();
 
         urlPatterns2.add("/employee");

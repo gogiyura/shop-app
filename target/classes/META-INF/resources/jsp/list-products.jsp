@@ -26,8 +26,7 @@
         <input type="hidden" id="searchAction" name="searchAction" value="searchByName">
         <div class="input-group mb-3 mt-3">
             <input type="text" name="productName" id="productName" class="form-control" required="true" placeholder="Type the Name or Brand of the product"/>
-            <button class="btn btn-outline-primary" type="button">Search
-            </button>
+            <button class="btn btn-outline-primary" type="button">Search</button>
         </div>
 
 

@@ -1,4 +1,4 @@
-package com.example.model.logination;
+package com.example.model.simpleapp;
 
 import com.example.model.simpleapp.MyUtils;
 import com.example.model.simpleapp.UserAccount;

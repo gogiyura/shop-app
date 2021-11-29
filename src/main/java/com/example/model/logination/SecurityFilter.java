@@ -1,5 +1,7 @@
 package com.example.model.logination;
 
+import com.example.model.simpleapp.UserAccount;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-//@WebFilter(filterName="MyServlet",urlPatterns="/*")
+@WebFilter(filterName="MyServlet",urlPatterns="/*")
 public class SecurityFilter implements Filter{
     public SecurityFilter() {
     }
@@ -26,7 +28,8 @@ public class SecurityFilter implements Filter{
 
         // Информация пользователя сохранена в Session
         // (После успешного входа в систему).
-        _UserAccount loginedUser = AppUtils.getLoginedUser(request.getSession());
+
+        UserAccount loginedUser = AppUtils.getLoginedUser(request.getSession());
 
         if (servletPath.equals("/login")) {
             chain.doFilter(request, response);

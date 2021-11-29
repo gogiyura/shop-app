@@ -1,4 +1,4 @@
-package com.example.model.simpleapp;
+package com.example.model.entity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +17,14 @@ public class Cart {
         } else {
             map.put(product_id, count);
         }
+    }
+
+    public void add(int product_id) {
+        add(product_id, 1);
+    }
+
+    public void completeOrder() {
+
     }
 
 

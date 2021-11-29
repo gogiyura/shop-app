@@ -25,11 +25,12 @@
 
 <table border="1" cellpadding="5" cellspacing="1" >
     <tr>
-        <th>Code</th>
+        <th><a href="">Code</a></th>
         <th>Name</th>
         <th>Price</th>
         <th>Edit</th>
         <th>Delete</th>
+        <th>Add to cart</th>
     </tr>
     <c:forEach items="${productList}" var="product" >
         <tr>
@@ -41,6 +42,9 @@
             </td>
             <td>
                 <a href="deleteProduct?code=${product.code}">Delete</a>
+            </td>
+            <td>
+                <a href="addToCart?code=${product.code}">Add to cart</a>
             </td>
         </tr>
     </c:forEach>

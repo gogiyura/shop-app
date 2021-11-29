@@ -1,5 +1,7 @@
 package com.example.model.logination;
 
+import com.example.model.simpleapp.UserAccount;
+
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +19,9 @@ public class AppUtils {
     }
 
     // Получить информацию пользователя, сохраненную в Session.
-    public static _UserAccount getLoginedUser(HttpSession session) {
-        _UserAccount loginedUser = (_UserAccount) session.getAttribute("loginedUser");
+    public static UserAccount getLoginedUser(HttpSession session) {
+
+        UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");
         return loginedUser;
     }
 

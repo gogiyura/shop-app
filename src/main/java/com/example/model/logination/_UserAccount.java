@@ -10,7 +10,6 @@ public class _UserAccount {
     private String userName;
     private String gender;
     private String password;
-
     private List<String> roles;
 
     public _UserAccount() {
