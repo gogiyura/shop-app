@@ -1,5 +1,7 @@
 package com.example.model.entity;
 
+import com.example.model.Utils;
+
 import java.sql.Date;
 
 public class User extends Entity {
@@ -23,15 +25,21 @@ public class User extends Entity {
         this.birthDate = birthDate;
     }
 
+    public User(String login, String password) {
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.blocked = false;
-        this.role = Role.USER;
     }
 
+    public User(String login, String password, int n){
+        if(n == 1) {
+            this.email = login;
+        } else if(n == 2) {
+            this.phoneNumber = login;
+        }
+        this.password = password;
 
+    }
+
+    public User(){}
     public String getLastName() {
         return lastName;
     }

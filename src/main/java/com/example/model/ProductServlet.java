@@ -1,7 +1,6 @@
 package com.example.model;
 
 import com.example.model.entity.Product;
-import org.apache.juli.logging.Log;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -105,7 +104,7 @@ public class ProductServlet extends HttpServlet {
         String brand = req.getParameter("brand");
         String description = req.getParameter("description");
         String price = req.getParameter("price");
-        String category = req.getParameter("category");
+        long category = Long.parseLong(req.getParameter("category"));
         String country = req.getParameter("country");
         Product product = new Product(name, brand, description, price, category, country);
         long idProduct = ProductDAO.addProduct(product);
@@ -123,7 +122,7 @@ public class ProductServlet extends HttpServlet {
         String brand = req.getParameter("brand");
         String description = req.getParameter("description");
         String price = req.getParameter("price");
-        String category = req.getParameter("category");
+        long category = Long.parseLong(req.getParameter("category"));
         String country = req.getParameter("country");
         long idProduct = Integer.valueOf(req.getParameter("idProduct"));
         Product product = new Product(name, brand, description, price, category, country, idProduct);

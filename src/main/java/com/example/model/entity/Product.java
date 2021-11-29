@@ -4,34 +4,52 @@ import java.sql.Date;
 
 public class Product extends Entity{
 
-    private String name;
-    private String brand;
-    private String description;
-    private int price;
-    private String imageUrl;
-    private Category category;
-    private String country;
+    private String name, brand, description, imageUrl, country;
+    private Integer price;
+    private Long categoryId;
     private Date createTime;
 
-    public long getProductCategoryId() {
-        Category cat = this.getCategory();
-        return cat.getId();
+    public static String getTableHeaderRow () {
+        return "<td>name</td>" +
+                "<td>price</td>" +
+                "<td>brand</td>" +
+                "<td>description</td>" +
+                "<td>country</td>";
     }
 
-    public Product(String name, String brand, String description, String price, String category, String country) {
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", description='" + description + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", country='" + country + '\'' +
+                ", price=" + price +
+                ", categoryId=" + categoryId +
+                ", createTime=" + createTime +
+                '}';
+    }
+
+    public Product(String name, String brand, String description, String price, long category, String country) {
 
         this.name = name;
         this.brand = brand;
         this.description = description;
         this.price = Integer.parseInt(price);
-        this.category = new Category();
-        this.category.setName(category);
+        this.categoryId = category;
         this.country = country;
     }
 
-    public Product(String name, String brand, String description, String price, String category, String country, Long id) {
-        Product product = new Product(name, brand, description, price, category, country);
-        product.setId(id);
+    public Product(String name, String brand, String description, String price, long category, String country, Long id) {
+
+        this.name = name;
+        this.brand = brand;
+        this.description = description;
+        this.price = Integer.parseInt(price);
+        this.categoryId = category;
+        this.country = country;
+        this.setId(id);
     }
 
     public Product(){}
@@ -84,12 +102,12 @@ public class Product extends Entity{
         this.imageUrl = imageUrl;
     }
 
-    public Category getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCountry() {

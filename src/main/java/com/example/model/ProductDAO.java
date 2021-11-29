@@ -1,10 +1,13 @@
 package com.example.model;
 
-import com.example.model.Utils.*;
 import com.example.model.entity.Category;
 import com.example.model.entity.Product;
 import org.apache.log4j.Logger;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
@@ -39,13 +42,38 @@ public class ProductDAO {
     public static final String SQL_GET_BRANDS_BY_CATEGORY = "SELECT brand FROM product WHERE category_id = ? GROUP BY brand LIMIT 5";
     private static final String DELETE_PRODUCT_BY_ID = "DELETE FROM product WHERE id=?";
 
-    private static ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static DataSource connectionPool = ConnectionPool.getInstance();
+
+    private static Connection getConnection() throws SQLException {
+        return connectionPool.getConnection();
+    }
+
+    private static Connection getConnection(String s) throws SQLException {
+        Connection c = null;
+        try {
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/shop-app");
+            c = ds.getConnection();
+        } catch (NamingException e) {
+            log.trace("searching context", e);
+        }
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            c=DriverManager.getConnection("jdbc:mysql://localhost:3306/shop","root","1003");
+        } catch (ClassNotFoundException e) {
+            log.trace("Cant find driver", e);
+        }
+        return c;
+
+        //return connectionPool.getConnection();
+    }
 
     public static List<Product> getAllProducts() {
         List<Product> productList = new ArrayList<>();
-        try (Connection con = connectionPool.getConnection();
-             PreparedStatement pst = con.prepareStatement(SQL_GET_ALL_PRODUCTS);
-             ResultSet rs = pst.executeQuery()) {
+        try (Connection con = getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_GET_ALL_PRODUCTS))
+        {
+            ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 productList.add(mapProduct(rs));
             }
@@ -60,7 +88,7 @@ public class ProductDAO {
 
     public static List<Product> searchProductByName(String name) throws SQLException{
         List<Product> productList = new ArrayList();
-        try (Connection con = connectionPool.getConnection())
+        try (Connection con = getConnection())
         {
             PreparedStatement pst = null;
                 pst = con.prepareStatement(SQL_SEARCH_PRODUCT_BY_NAME);
@@ -77,7 +105,7 @@ public class ProductDAO {
 
     public static List<Product> getPopularProducts(long limit) throws SQLException{
         List<Product> products = new ArrayList<>();
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_POPULAR_PRODUCTS)) {
             pst.setLong(1, limit);
             ResultSet rs = pst.executeQuery();
@@ -120,7 +148,7 @@ public class ProductDAO {
         }
 
 
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_PRODUCTS_BY_CATEGORY);
              ) {
             pst.setLong(1, category.getId());
@@ -129,7 +157,6 @@ public class ProductDAO {
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     Product product = mapProduct(rs);
-                    product.setCategory(category);
                     list.add(product);
                 }
             }
@@ -141,7 +168,7 @@ public class ProductDAO {
 
     public static Product findProductById(long id) throws SQLException{
         Product product = null;
-        try (Connection con = connectionPool.getConnection()) {
+        try (Connection con = getConnection()) {
             PreparedStatement pst = con.prepareStatement(SQL_FIND_PRODUCT_BY_ID);
             pst.setLong(1, id);
             ResultSet rs = pst.executeQuery();
@@ -158,7 +185,7 @@ public class ProductDAO {
     private static Product mapProductAndCategory(ResultSet rs) throws SQLException {
         Product product = mapProduct(rs);
         Category category = mapCategory(rs);
-        product.setCategory(category);
+        product.setCategoryId(category.getId());
         return product;
     }
 
@@ -166,7 +193,7 @@ public class ProductDAO {
     public static long addProduct(Product product) {
         long id = 0;
 
-        try (Connection con = connectionPool.getConnection()) {
+        try (Connection con = getConnection()) {
             try {
                 PreparedStatement ps = con.prepareStatement(SQL_INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
                 //name,brand,description,price,image_url,category_id,country
@@ -175,7 +202,7 @@ public class ProductDAO {
                 ps.setString(3, product.getDescription());
                 ps.setInt(4, product.getPrice());
                 ps.setString(5, product.getImageUrl());
-                ps.setLong(6, product.getProductCategoryId());
+                ps.setLong(6, product.getCategoryId());
                 int affectedRows = ps.executeUpdate();
                 if (affectedRows > 0) {
                     try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -210,7 +237,7 @@ public class ProductDAO {
 
     public static boolean updateProduct(Product product) {
         boolean res = false;
-        try (Connection con = connectionPool.getConnection()) {
+        try (Connection con = getConnection()) {
             try {
                 PreparedStatement ps = con.prepareStatement(SQL_UPDATE_PRODUCT, Statement.RETURN_GENERATED_KEYS);
                 //name,brand,description,price,image_url,category_id,country
@@ -219,7 +246,7 @@ public class ProductDAO {
                 ps.setString(3, product.getDescription());
                 ps.setInt(4, product.getPrice());
                 ps.setString(5, product.getImageUrl());
-                ps.setLong(6, product.getProductCategoryId());
+                ps.setLong(6, product.getCategoryId());
                 ps.setLong(7, product.getId());
                 int affectedRows = ps.executeUpdate();
                 res = affectedRows > 0;
@@ -238,7 +265,7 @@ public class ProductDAO {
         long productId = 0;
 
         // Since insert and update SQL queries are similar, we preparing statement in one line
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(
                      product.getId() > 0 ? SQL_UPDATE_PRODUCT : SQL_INSERT_PRODUCT,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -249,7 +276,7 @@ public class ProductDAO {
             pst.setTimestamp(4, new Timestamp(product.getCreateTime().getTime()));
             pst.setInt(5, product.getPrice());
             pst.setString(6, product.getImageUrl());
-            pst.setLong(7, product.getCategory().getId());
+            pst.setLong(7, product.getCategoryId());
             pst.setString(8, product.getCountry());
 
             if (product.getId() > 0) {
@@ -274,7 +301,7 @@ public class ProductDAO {
     public static boolean deleteProduct(long id) throws SQLException {
         boolean res = false;
         Predicate<Product> product = e -> e.getId() == id;
-        Connection con = connectionPool.getConnection();
+        Connection con = getConnection();
         PreparedStatement ps = con.prepareStatement(DELETE_PRODUCT_BY_ID);
         try {
             ps.setString(1, String.valueOf(id));
@@ -304,7 +331,7 @@ public class ProductDAO {
 
     public static List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_ALL_CATEGORIES);
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -318,7 +345,7 @@ public class ProductDAO {
 
     public static Category findCategoryById(long id) {
         Category category = null;
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_CATEGORY_BY_ID)) {
             pst.setLong(1, id);
             try (ResultSet rs = pst.executeQuery()) {
@@ -336,7 +363,7 @@ public class ProductDAO {
 
     public static List<String> getBrandsByCategory(long categoryId) {
         List<String> brands = new ArrayList<>();
-        try (Connection con = connectionPool.getConnection();
+        try (Connection con = getConnection();
              PreparedStatement pst = con.prepareStatement(SQL_GET_BRANDS_BY_CATEGORY)) {
             pst.setLong(1, categoryId);
             try (ResultSet rs = pst.executeQuery()) {

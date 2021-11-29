@@ -9,12 +9,11 @@ public class RegisterDAO {
     public static int register(User u){
         int status=0;
         try{
-            ConnectionPool cp = ConnectionPool.getInstance();
-            Connection con = cp.getConnection();
-            PreparedStatement ps=con.prepareStatement("insert into user432 values(?,?,?)");
+            Connection con=ConnectionProvider.getCon();
+            PreparedStatement ps=con.prepareStatement("insert into user(email, password) values(?,?)");
             ps.setString(1,u.getEmail());
             ps.setString(2,u.getPassword());
-            ps.setString(3,u.getPhoneNumber());
+
             status=ps.executeUpdate();
         }catch(Exception e){}
 

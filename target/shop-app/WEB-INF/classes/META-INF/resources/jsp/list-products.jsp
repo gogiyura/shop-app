@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.example.model.entity.Product" %><%--
   Created by IntelliJ IDEA.
   User: Георгий
   Date: 26.11.2021
@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -23,16 +24,17 @@
     <!--Search Form -->
     <form action="/catalog" method="get" id="seachProductForm" role="form">
         <input type="hidden" id="searchAction" name="searchAction" value="searchByName">
-
-        <div class="form-group col-xs-5">
+        <div class="input-group mb-3 mt-3">
             <input type="text" name="productName" id="productName" class="form-control" required="true" placeholder="Type the Name or Brand of the product"/>
             <button class="btn btn-outline-primary" type="button">Search
             </button>
         </div>
 
+
         <br></br>
         <br></br>
     </form>
+
 
 <!--Products List-->
 <c:if test="${not empty message}">
@@ -49,12 +51,7 @@
                 <thead>
                 <tr>
                     <td>#</td>
-                    <td>Name</td>
-                    <td>Brand</td>
-                    <td>Description</td>
-                    <td>Price</td>
-                    <td>Category</td>
-                    <td>Country</td>
+                    <% Product.getTableHeaderRow(); %>
                     <td></td>
                 </tr>
                 </thead>
@@ -68,10 +65,9 @@
                             <a href="/product?idProduct=${product.id}&searchAction=searchById">${product.id}</a>
                         </td>
                         <td>${product.name}</td>
+                        <td>${product.price}</td>
                         <td>${product.brand}</td>
                         <td>${product.description}</td>
-                        <td>${product.price}</td>
-                        <td>${product.category}</td>
                         <td>${product.country}</td>
                         <td><a href="#" id="remove"
                                onclick="document.getElementById('action').value = 'remove';

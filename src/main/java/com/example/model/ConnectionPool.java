@@ -1,23 +1,39 @@
 package com.example.model;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionPool {
+
+
 
     private ConnectionPool(){
         //private constructor
     }
 
-    private static ConnectionPool instance;
+    private static DataSource instance;
 
-    public static ConnectionPool getInstance(){
+    public static DataSource getInstance(){
         if (instance==null)
-            instance = new ConnectionPool();
+        {
+            /*HikariConfig config = new HikariConfig("hikaricp.properties");
+            //config.setJdbcUrl();
+            HikariDataSource ds = new HikariDataSource();*/
+
+            instance = DBUtil.getDataSource();
+        }
         return instance;
     }
 
