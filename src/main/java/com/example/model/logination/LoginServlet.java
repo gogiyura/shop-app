@@ -77,7 +77,7 @@ public class LoginServlet extends HttpServlet {
         // forward (перенаправить) к /WEB-INF/views/login.jsp
         if (hasError) {
             user = new UserAccount();
-            user.setUserName(userName);
+            user.setName(userName);
             user.setPassword(password);
 
             // Сохранить информацию в request attribute перед forward.

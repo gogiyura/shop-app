@@ -17,5 +17,13 @@
     <a href="${pageContext.request.contextPath}/userInfo">My Account Info</a>
     |
     <a href="${pageContext.request.contextPath}/login">Login</a>
+    |
+    <a href="${pageContext.request.contextPath}/logout">${r}Logout</a>
+    |
+    <a href="${pageContext.request.contextPath}/registration">${r}Registration</a>
+    |
+    <a href="${pageContext.request.contextPath}/userList">User List</a>
+    |
+    <a href="${pageContext.request.contextPath}/orderList">Order List</a>
 
 </div>

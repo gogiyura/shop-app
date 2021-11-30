@@ -1,7 +1,6 @@
 package com.example.model.simpleapp;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class UserAccount {
@@ -9,8 +8,8 @@ public class UserAccount {
     public static final String GENDER_MALE ="M";
     public static final String GENDER_FEMALE = "F";
 
-    private String userName;
-    private String gender;
+    private String email;
+    private String name;
     private String password;
     private List<String> roles = getRoles();
     private boolean blocked = false;
@@ -18,6 +17,14 @@ public class UserAccount {
 
     public UserAccount() {
 
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void switchBlocking(){
@@ -33,9 +40,8 @@ public class UserAccount {
     }
 
     public UserAccount(String userName, String password, String gender, String... roles) {
-        this.userName = userName;
+        this.name = userName;
         this.password = password;
-        this.gender = gender;
 
 
         this.roles = new ArrayList<String>();
@@ -46,24 +52,16 @@ public class UserAccount {
         }
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
     public String getLogin() {
-        return userName;
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {

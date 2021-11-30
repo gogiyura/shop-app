@@ -41,7 +41,7 @@ public class MyUtils {
     // Сохранить информацию пользователя в Cookie.
     public static void storeUserCookie(HttpServletResponse response, UserAccount user) {
         System.out.println("Store user cookie");
-        Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, user.getUserName());
+        Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, user.getName());
         // 1 день (Конвертированный в секунды)
         cookieUserName.setMaxAge(24 * 60 * 60);
         response.addCookie(cookieUserName);

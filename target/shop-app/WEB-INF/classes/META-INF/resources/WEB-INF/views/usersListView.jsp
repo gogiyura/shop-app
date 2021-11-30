@@ -25,34 +25,30 @@
 
 <table border="1" cellpadding="5" cellspacing="1" >
     <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Edit</th>
-        <th>Delete</th>
-        <th>Add to cart</th>
+        <th>id</th>
+        <th>email</th>
+        <th>password</th>
+        <th></th>
     </tr>
-    <c:forEach items="${productList}" var="product" >
+    <c:forEach items="${userList}" var="user" >
         <tr>
-            <td>${product.code}</td>
-            <td>${product.name}</td>
-            <td>${product.price}</td>
+            <td>${user.id}</td>
+            <td>${user.email}</td>
+            <td>${user.password}</td>
+
             <td>
-                <a href="editProduct?code=${product.code}">Edit</a>
+                <a href="switch?code=${suser.code}">Block</a>
             </td>
-            <td>
-                <a href="deleteProduct?code=${product.code}">Delete</a>
-            </td>
-            <td>
-                <a href="addToCart?code=${product.code}">Delete</a>
-            </td>
+
         </tr>
     </c:forEach>
 </table>
 
-<a href="createProduct" >Create Product</a>
 
 <jsp:include page="_footer.jsp"></jsp:include>
+
+
+
 
 </body>
 </html>

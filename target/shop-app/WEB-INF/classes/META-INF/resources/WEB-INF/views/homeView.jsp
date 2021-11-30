@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset="UTF-8">
     <title>Home Page</title>
 </head>
@@ -16,7 +17,7 @@
 
 <jsp:include page="_header.jsp"></jsp:include>
 <jsp:include page="_menu.jsp"></jsp:include>
-
+<div>
 <h3>Home Page</h3>
 
 This is demo Simple web application using jsp,servlet &amp; Jdbc. <br><br>
@@ -29,6 +30,12 @@ This is demo Simple web application using jsp,servlet &amp; Jdbc. <br><br>
     <li>Edit Product</li>
     <li>Delete Product</li>
 </ul>
+
+</div>
+
+<div>
+    <img src="">
+</div>
 
 <jsp:include page="_footer.jsp"></jsp:include>
 

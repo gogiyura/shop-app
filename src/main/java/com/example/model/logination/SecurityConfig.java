@@ -22,6 +22,7 @@ public class SecurityConfig {
         urlPatterns1.add("/employee");
         urlPatterns1.add("/cabinet");
         urlPatterns1.add("/userInfo");
+        urlPatterns1.add("/userinfo");
         urlPatterns1.add("/employeeTask");
 
         mapConfig.put(ROLE_USER, urlPatterns1);
@@ -31,7 +32,7 @@ public class SecurityConfig {
 
         urlPatterns2.add("/employee");
         urlPatterns2.add("/control");
-        urlPatterns2.add("/userInfo");
+        urlPatterns2.add("/userinfo");
         urlPatterns2.add("/managerTask");
 
         mapConfig.put(ROLE_ADMIN, urlPatterns2);

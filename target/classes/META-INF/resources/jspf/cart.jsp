@@ -12,3 +12,4 @@
 <c:forEach var="key" items="${cart.getCart()}">
     <p><c:out value="key" /> </p>
 </c:forEach>
+

@@ -50,6 +50,7 @@ public class ProductDAO {
 
     private static Connection getConnection(String s) throws SQLException {
         Connection c = null;
+
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/shop-app");
@@ -57,6 +58,7 @@ public class ProductDAO {
         } catch (NamingException e) {
             log.trace("searching context", e);
         }
+
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             c=DriverManager.getConnection("jdbc:mysql://localhost:3306/shop","root","1003");

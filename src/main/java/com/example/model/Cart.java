@@ -2,10 +2,9 @@ package com.example.model;
 
 import com.example.model.entity.Product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
+
 
 public class Cart {
     private Map<Product, Integer> cart;
@@ -18,12 +17,7 @@ public class Cart {
     public Cart(Product product) {
         new Cart(product, 1);
     }
-
-    public Map<Product, Integer> getCart() {
-
-        return cart;
-    }
-
+    public Map<Product, Integer> getCart() {return cart;}
     public void add(Product product) {
         add(product, 1);
     }

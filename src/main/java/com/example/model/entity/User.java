@@ -13,9 +13,7 @@ public class User extends Entity {
     private Date birthDate;
     private Date createTime;
 
-    private String phoneNumber;
-    private String email;
-    private String password;
+    private String email, password, phoneNumber;
 
     public Date getBirthDate() {
         return birthDate;

@@ -11,6 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset="UTF-8">
     <title>Product List</title>
 </head>
@@ -30,7 +31,6 @@
         <th>Price</th>
         <th>Edit</th>
         <th>Delete</th>
-        <th>Add to cart</th>
     </tr>
     <c:forEach items="${productList}" var="product" >
         <tr>
@@ -43,15 +43,13 @@
             <td>
                 <a href="deleteProduct?code=${product.code}">Delete</a>
             </td>
-            <td>
-                <a href="addToCart?code=${product.code}">Add to cart</a>
-            </td>
+
         </tr>
     </c:forEach>
 </table>
-
+<br/>
 <a href="createProduct" >Create Product</a>
-
+<br/>
 <jsp:include page="_footer.jsp"></jsp:include>
 
 </body>

@@ -1,4 +1,8 @@
+-- create database test;
+use test;
+
 -- Create table
+
 create table USER_ACCOUNT
 (
     USER_NAME VARCHAR(30) not null,
@@ -36,3 +40,4 @@ values ('P001', 'Java Core', 100);
 insert into product (CODE, NAME, PRICE)
 values ('P002', 'C# Core', 90);
 
+commit;

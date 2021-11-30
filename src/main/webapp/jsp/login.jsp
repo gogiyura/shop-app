@@ -17,7 +17,7 @@
 <body>
 <jsp:include page="../jspf/navbar.jsp" />
 
-<jsp:include page="../html/login-form.html" />
+<jsp:include page="../html/_login-form.html" />
 
 <jsp:include page="../jspf/footer.jsp" />
 </body>

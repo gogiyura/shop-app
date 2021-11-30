@@ -22,6 +22,7 @@ public class LogoutServlet extends HttpServlet {
             throws ServletException, IOException {
         request.getSession().invalidate();
 
+
         String nextJSP = "/index.jsp";
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
         // request.setAttribute("employeeList");
@@ -34,6 +35,8 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String key = request.getParameter("search");
+
         this.doGet(request, response);
     }
 }

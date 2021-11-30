@@ -1,7 +1,5 @@
 package com.example.model.simpleapp;
 
-import com.example.model.simpleapp.Product;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +23,8 @@ public class DBUtils {
         if (rs.next()) {
             String gender = rs.getString("Gender");
             UserAccount user = new UserAccount();
-            user.setUserName(userName);
+            user.setName(userName);
             user.setPassword(password);
-            user.setGender(gender);
             return user;
         }
         return null;
@@ -47,9 +44,8 @@ public class DBUtils {
             String password = rs.getString("Password");
             String gender = rs.getString("Gender");
             UserAccount user = new UserAccount();
-            user.setUserName(userName);
+            user.setName(userName);
             user.setPassword(password);
-            user.setGender(gender);
             return user;
         }
         return null;
