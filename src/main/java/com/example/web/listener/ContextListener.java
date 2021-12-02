@@ -1,6 +1,6 @@
 package com.example.web.listener;
 
-import com.example.model.ConnectionPool;
+import com.example.db.ConnectionPool;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -12,6 +12,7 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         // lazy initializing DBHelper
+        System.out.println("Context initialization");
         ConnectionPool.getInstance();
     }
 

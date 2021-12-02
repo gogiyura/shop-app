@@ -19,7 +19,7 @@
 <jsp:include page="_menu.jsp"></jsp:include>
 <div>
 <h3>Home Page</h3>
-
+<div>
 This is demo Simple web application using jsp,servlet &amp; Jdbc. <br><br>
 <b>It includes the following functions:</b>
 <ul>
@@ -30,6 +30,7 @@ This is demo Simple web application using jsp,servlet &amp; Jdbc. <br><br>
     <li>Edit Product</li>
     <li>Delete Product</li>
 </ul>
+</div>
 
 </div>
 

@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Георгий
@@ -12,13 +13,14 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title><fmt:message key="signup"/></title>
+
 </head>
 <body>
 <jsp:include page="_header.jsp"></jsp:include>
 <jsp:include page="_menu.jsp"></jsp:include>
 
-<h3>Login Page</h3>
+<h2><fmt:message key="signup"/></h2>
 <p style="color: red;">${errorString}</p>
 
 

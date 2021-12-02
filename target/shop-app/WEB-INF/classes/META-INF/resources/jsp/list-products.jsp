@@ -1,4 +1,4 @@
-<%@ page import="com.example.model.entity.Product" %><%--
+<%@ page import="com.example.references.trash.Product" %><%--
   Created by IntelliJ IDEA.
   User: Георгий
   Date: 26.11.2021

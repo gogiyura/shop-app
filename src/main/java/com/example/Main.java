@@ -1,22 +1,31 @@
 package com.example;
 
 
-import com.example.model.ConnectionPool;
-import com.example.model.ProductDAO;
-import com.example.model.Utils;
+import com.example.db.ConnectionPool;
+
+import com.example.model.ProductController;
+import com.example.model.ProductSpecification;
+
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ResourceBundle;
 
 public class Main {
 
 
 
     public static void main(String[] args) throws Exception {
+
+        ResourceBundle bundle = ResourceBundle.getBundle("shop");
+
+
         DataSource ds = ConnectionPool.getInstance();
         System.out.println(ds);
 
-        System.out.println(ProductDAO.getAllProducts());
+        System.out.println(new ProductController().
+                query(new ProductSpecification()));
+
         Connection c = ds.getConnection();
         System.out.println(c);
         String sql = "SELECT * FROM PRODUCT;";
@@ -28,7 +37,7 @@ public class Main {
             }
             System.out.print("\n");
         }
-        Utils.closeRSet(rs);
+        rs.close();
         st.close();
         c.close();
     }
